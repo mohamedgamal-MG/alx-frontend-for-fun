@@ -17,17 +17,17 @@ def convert_md_to_html(input_file, output_file):
         if heading_match:
             h_level = min(6, len(heading_match.group(0).strip()))
             h_content = heading_match.group(1).strip()
-            html_content.append(f'<h{h_level}>{h_content}</h{h_level}>\n')
+            html_content.append('<h{0}>{1}</h{0}>\n'.format(h_level, h_content))
         elif line.startswith('- '):
             if not in_list:
                 in_list = True
                 html_content.append('<ul>\n')
-            html_content.append(f'<li>{line[2:].strip()}</li>\n')
+            html_content.append('<li>{0}</li>\n'.format(line[2:].strip()))
         elif line.startswith('* '):
             if not in_list:
                 in_list = True
                 html_content.append('<ol>\n')
-            html_content.append(f'<li>{line[2:].strip()}</li>\n')
+            html_content.append('<li>{0}</li>\n'.format(line[2:].strip()))
         elif re.match(r'^\s*$', line):
             if in_list:
                 in_list = False
@@ -43,7 +43,7 @@ def convert_md_to_html(input_file, output_file):
             line = re.sub(r'\[\[(.*?)\]\]', lambda x: hashlib.md5(x.group(1).encode('utf-8')).hexdigest(), line)
             line = re.sub(r'\(\((.*?)\)\)', lambda x: x.group(1).replace('c', ''), line)
 
-            html_content.append(f'{line.rstrip()}<br/>\n')
+            html_content.append('{0}<br/>\n'.format(line.rstrip()))
 
     # Write the HTML content to the output file
     with open(output_file, 'w', encoding='utf-8') as f:
@@ -58,7 +58,7 @@ if __name__ == '__main__':
     output_file = sys.argv[2]
 
     if not pathlib.Path(input_file).is_file():
-        print(f"Missing {input_file}", file=sys.stderr)
+        print("Missing {0}".format(input_file), file=sys.stderr)
         sys.exit(1)
 
     convert_md_to_html(input_file, output_file)
